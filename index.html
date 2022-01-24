@@ -75,20 +75,15 @@ function test2(position) {
 
 function replaceURL(){
     
-    //var mapAdress = "https://www.google.co.jp/maps/@${stringLon}"+ stringLat + "0" + "," + stringLon + "0"
+    //地理院タイル用のurlを作成、緯度経度を5桁から6桁に変更
     var mapAdress = "https://maps.gsi.go.jp/?hc=hic#14/" + stringLat + "0" +  "/" + stringLon + "0" + "/&base=std&ls=std&disp=1&vs=c1j0h0k0l0u0t0z0r0s0m0f1" ;
     console.log(mapAdress);
 
     //googlemapのiframeのurlを取得した緯度経度に変更
     document.getElementById("mapURL").src = mapAdress ;
 
-    //googlemap urlの形式
-    //https://www.google.co.jp/maps/@(緯度),(軽度),(ズーム値)z
 }
 
-function test3(){
-    console.log(stringLon);
-}
 
 </script>
 </head>
