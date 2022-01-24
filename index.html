@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script>
+function test() {
+    navigator.geolocation.getCurrentPosition(test2);
+}
+
+function test2(position) {
+
+    //まず現在地の緯度経度を取得する
+    var geo_text = "緯度:" + position.coords.latitude + "\n";
+    geo_text += "経度:" + position.coords.longitude + "\n";
+    geo_text += "高度:" + position.coords.altitude + "\n";
+    geo_text += "位置精度:" + position.coords.accuracy + "\n";
+    geo_text += "高度精度:" + position.coords.altitudeAccuracy  + "\n";
+    geo_text += "移動方向:" + position.coords.heading + "\n";
+    geo_text += "速度:" + position.coords.speed + "\n";
+    geo_text += "方角:" + position.coords.heading + "\n";
+
+    var date = new Date(position.timestamp);
+
+    geo_text += "取得時刻:" + date.toLocaleString() + "\n";
+
+    console.log(geo_text);
+    //alert(geo_text);
+
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+
+    //取得した緯度経度とAPIで使用する緯度経度の桁数が違うので合わせる（小数点以下6桁）
+    var adjustiveLat = lat + "00";
+    var adjustiveLon = lon + "0";
+
+    //緯度経度を文字列に変換する
+    stringLat = String(adjustiveLat);
+    stringLon = String(adjustiveLon);
+
+    //国土地理院APIに現在地の緯度経度を渡して、標高を取得する
+
+    //元のフォーマット
+    //const url = 'http://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=140.08531&lat=36.103543&outtype=JSON';
+    //下記の方法だとなぜか変数が文字列に変換されない
+    //const url = 'http://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=${stringLon}&lat=${stringLat}&outtype=JSON';
+
+    //取得した緯度経度をもとにAPIのURLを作成
+    const url = 'http://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=' + stringLon + '&lat=' + stringLat + '&outtype=JSON';
+
+    fetch(url).then(function(response) {
+      return response.text();
+    }).then(function(text) {
+      console.log(text);
+      
+      //取得したjsonをパース
+      var jsonAltitude = JSON.parse(text);
+      console.log("標高：" + jsonAltitude.elevation + "m");
+
+      //ポップアップ表示
+      alert("現在地の標高は" + jsonAltitude.elevation + "mです。" +  "(" + "緯度：" + stringLat + "、経度：" + stringLon + ")")
+
+    });
+
+    console.log(url);
+
+    //位置情報の取得に失敗した場合の処理
+    function GeolocationFailure(){
+    console.log("位置情報の取得に失敗しました。");
+    }
+
+    //googlemapのiframeのurlを取得した緯度経度に変更
+    //document.getElementById('mapURL')[0].contentDocument.location.replace('11');
+
+}
+
+function replaceURL(){
+    
+    //var mapAdress = "https://www.google.co.jp/maps/@${stringLon}"+ stringLat + "0" + "," + stringLon + "0"
+    var mapAdress = "https://www.google.com/maps?q=35.6694219,139.4612045" 
+    console.log(mapAdress);
+
+    //googlemapのiframeのurlを取得した緯度経度に変更
+    document.getElementById("mapURL").src = mapAdress ;
+
+    //googlemap urlの形式
+    //https://www.google.co.jp/maps/@(緯度),(軽度),(ズーム値)z
+}
+
+</script>
+</head>
+<body>
+
+<button onclick="test()">標高を取得</button>
+<button onclick="replaceURL()">map</button>
+
+<iframe id="mapURL" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d25858.3598784291!2d139.46060799999998!3d35.89079040000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sjp!4v1642992384005!5m2!1sja!2sjp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+
+</body>
+</html>
