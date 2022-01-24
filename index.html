@@ -44,7 +44,7 @@ function test2(position) {
     //下記の方法だとなぜか変数が文字列に変換されない
     //const url = 'http://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=${stringLon}&lat=${stringLat}&outtype=JSON';
 
-    //取得した緯度経度をもとにAPIのURLを作成
+    //取得した緯度経度をもとにAPIのURLを作成(httpからhttpsに変更)
     const url = 'https://cyberjapandata2.gsi.go.jp/general/dem/scripts/getelevation.php?lon=' + stringLon + '&lat=' + stringLat + '&outtype=JSON';
 
     fetch(url).then(function(response) {
@@ -68,15 +68,15 @@ function test2(position) {
     console.log("位置情報の取得に失敗しました。");
     }
 
-    //googlemapのiframeのurlを取得した緯度経度に変更
-    //document.getElementById('mapURL')[0].contentDocument.location.replace('11');
+    //取得した現在位置の座標からマップを更新
+    replaceURL();
 
 }
 
 function replaceURL(){
     
     //var mapAdress = "https://www.google.co.jp/maps/@${stringLon}"+ stringLat + "0" + "," + stringLon + "0"
-    var mapAdress = "https://www.google.com/maps?q=35.6694219,139.4612045" 
+    var mapAdress = "https://maps.gsi.go.jp/?hc=hic#14/" + stringLat + "0" +  "/" + stringLon + "0" + "/&base=std&ls=std&disp=1&vs=c1j0h0k0l0u0t0z0r0s0m0f1" ;
     console.log(mapAdress);
 
     //googlemapのiframeのurlを取得した緯度経度に変更
@@ -86,12 +86,16 @@ function replaceURL(){
     //https://www.google.co.jp/maps/@(緯度),(軽度),(ズーム値)z
 }
 
+function test3(){
+    console.log(stringLon);
+}
+
 </script>
 </head>
 <body>
 
 <button onclick="test()">標高を取得</button>
-<button onclick="replaceURL()">map</button>
+
 
 <iframe id="mapURL" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d25858.3598784291!2d139.46060799999998!3d35.89079040000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sjp!4v1642992384005!5m2!1sja!2sjp" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
 
